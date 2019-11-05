@@ -13,15 +13,16 @@ export default class ProgressCircle extends Component {
     animationMethod: null,
     animationConfig: { duration: 200 },
     shouldAnimateFirstValue: false,
-    onChange() {},
-    onChangeAnimationEnd() {},
+    onChange() { },
+    onChangeAnimationEnd() { },
   }
 
   constructor(props) {
     super(props)
+
     this.state = {
       animatedValue:
-        props.value.constructor.name === 'AnimatedValue'
+        typeof props.value === 'object'
           ? null
           : new Animated.Value(props.shouldAnimateFirstValue ? 0 : props.value),
     }
@@ -29,7 +30,7 @@ export default class ProgressCircle extends Component {
 
   componentDidMount() {
     if (
-      this.props.value.constructor.name !== 'AnimatedValue' &&
+      typeof this.props.value === 'number' &&
       this.props.shouldAnimateFirstValue &&
       this.animationMethod
     ) {
@@ -90,7 +91,8 @@ export default class ProgressCircle extends Component {
 
   handleChange = (value = this.props.value) => {
     this.props.onChange()
-    if (value.constructor.name === 'AnimatedValue') {
+
+    if (typeof value === 'object') {
       return
     }
 
@@ -110,8 +112,9 @@ export default class ProgressCircle extends Component {
 
   renderHalfCircle = ({ isFlipped = false } = {}) => {
     const { size, color, thickness, value, style } = this.props
+
     const valueToInterpolate =
-      value.constructor.name === 'AnimatedValue'
+      typeof value === 'object'
         ? value
         : this.state.animatedValue
 
